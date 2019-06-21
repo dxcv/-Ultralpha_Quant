@@ -61,23 +61,25 @@ if __name__ == "__main__":
     # dataapi_beta = DataApi()
 
     ax,factor,data = DV_init()
-
-
-    x = list(data.index.get_level_values('date'))
-    y = list(factor.index.get_level_values('date'))
-# y = [ type(datetime_) for datetime_ in x]
-    print(min(x)-datetime.timedelta(days = 3))
-
     fx = FA_init(ax)
+
+    # x = list(data.index.get_level_values('date'))
+    # y = list(factor.index.get_level_values('date'))
+    # y = [ type(datetime_) for datetime_ in x]
+    # print(min(x)-datetime.timedelta(days = 3))
     # print(fx._cleaned_factor_data.columns)
     # print(fx._cleaned_factor_data.index)
     # print(fx._cleaned_factor_data['period_5'])
+
     Protfilio1 = Performance.factor_returns(fx.cleaned_factor_data,'beta')
     Protfilio2 = Performance.factor_returns(fx.cleaned_factor_data,'beta',False)
     booksize = 20000000
-
     print((booksize*Protfilio1['period_5']))
-
+    print((booksize*Protfilio2['period_1']))
+"""
+采用了2015-04-01的沪深三百的前一百只股票并进行了基于因子权重的收益分析，
+因子值为beta、book_to_price_ratio, gross_profit_ttm。
+"""
     # print((booksize*Protfilio2['period_5']).sum())
 
 
