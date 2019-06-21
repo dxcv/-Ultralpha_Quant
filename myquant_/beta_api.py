@@ -74,8 +74,8 @@ if __name__ == "__main__":
     Protfilio1 = Performance.factor_returns(fx.cleaned_factor_data,'beta')
     Protfilio2 = Performance.factor_returns(fx.cleaned_factor_data,'beta',False)
     booksize = 20000000
-    print((booksize*Protfilio1['period_5']))
-    print((booksize*Protfilio2['period_1']))
+    print((booksize*Protfilio1['period_5']).sum())
+    print((booksize*Protfilio2['period_1']).sum())
 """
 采用了2015-04-01的沪深三百的前一百只股票并进行了基于因子权重的收益分析，
 因子值为beta、book_to_price_ratio, gross_profit_ttm。
