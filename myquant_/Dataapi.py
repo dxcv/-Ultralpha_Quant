@@ -176,6 +176,9 @@ class DataApi(object):
             count=count, fq=self.fq
         )
         # [self.price]
+    def get_index_stocks(self,symbol,date='2015-04-01'):
+        return self.api.get_index_stocks(symbol,date)
+
 
     def _get_industry(self, securities, start_date, end_date,
                       industry='jq_l1'):

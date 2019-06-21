@@ -33,7 +33,7 @@ class FactorAnalyzer(object):
 
         self._max_loss = max_loss
 
-        self._cleaned_factor_data = self.data_clean_and_data_processing()
+        self.cleaned_factor_data = self.data_clean_and_data_processing()
 
     def data_clean_and_data_processing(self):
 

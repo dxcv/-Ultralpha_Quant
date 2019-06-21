@@ -10,16 +10,18 @@ import datetime
 import pandas as pd
 from jqdatasdk import get_factor_values
 from Factor_analyzer import *
+import Performance
 
 def DV_init():
     jqdatasdk.auth('15026415693', 'quiet2520')
     dataapi_beta = DataApi()
+    asset = dataapi_beta.get_index_stocks('000300.XSHG')[0:100]
     analyzer = DataView(
         name='loader_test',
         jq_api=dataapi_beta,
         start_date='2015-04-01',
         end_date='2016-04-01',
-        universe=['000001.XSHE', '000002.XSHE','000004.XSHE'],
+        universe=asset,
         fields=['open', 'close'],
         factors=['beta', 'book_to_price_ratio', 'gross_profit_ttm']
     )
@@ -69,7 +71,14 @@ if __name__ == "__main__":
     fx = FA_init(ax)
     # print(fx._cleaned_factor_data.columns)
     # print(fx._cleaned_factor_data.index)
-    print(fx._cleaned_factor_data['period_5'])
+    # print(fx._cleaned_factor_data['period_5'])
+    Protfilio1 = Performance.factor_returns(fx.cleaned_factor_data,'beta')
+    Protfilio2 = Performance.factor_returns(fx.cleaned_factor_data,'beta',False)
+    booksize = 20000000
+
+    print((booksize*Protfilio1['period_5']))
+
+    # print((booksize*Protfilio2['period_5']).sum())
 
 
 # print(factor.loc[data.index[0:5]])
