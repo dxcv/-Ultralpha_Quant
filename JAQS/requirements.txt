@@ -1,0 +1,7 @@
+future
+Jinja2
+msgpack-python
+pandas >= 0.20.0
+pyzmq
+seaborn
+six

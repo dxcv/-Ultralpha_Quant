@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html xmlns:right="http://www.w3.org/1999/xhtml">
+<head lang="en-us">
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <title>{{ html_title }}</title>
+
+    <!-- Bootstrap CSS -->
+    <!-- <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous"> -->
+    <!-- add after bootstrap.min.css: bootstrap-toc -->
+    <!-- <link rel="stylesheet" href="bootstrap-toc/bootstrap-toc.css"> -->
+
+    <!-- In-document CSS -->
+    <style>
+        {% include 'bootstrap/css/bootstrap.min.css' %}
+        {% include 'bootstrap-toc/bootstrap-toc.min.css' %}
+        {% include 'additional.css' %}
+    </style>
+
+
+</head>
+
+<body data-spy="scroll" data-target="#toc">
+
+<div id="top"></div>
+
+<!--
+<div id="mytoc">
+    Table of Contents
+    <div id="full">
+        <ul>
+            <li class=""><a href="#config">Usage</a>
+                <ul class="nav">
+                    <li class=""><a href="#via-data-attributes">Via data attributes</a></li>
+                    <li class=""><a href="#via-javascript">Via JavaScript</a></li>
+                </ul>
+            </li>
+            <li class=""><a href="#performance">Customization</a>
+                <ul class="nav">
+                    <li class=""><a href="#pmetric">Displayed text</a></li>
+                    <li class=""><a href="#rmetric">Skipping</a></li>
+                </ul>
+            </li>
+            <li class="active"><a href="#trading_holding">Layout</a></li>
+            <li><a href="#examples">Examples</a></li>
+            <li class=""><a href="#see-also">See also</a></li>
+        </ul>
+    </div>
+</div>
+
+-->
+<div class="container-fluid">
+    <div class="row">
+        <!-- Left page: main page -->
+        <div class="col-md-9" role="main">
+            <!-- Configs Table -->
+            <h2 id="config">Backtest Configs</h2>
+            <p>This is the configs your backtesting used.</p>
+
+            <table class="table table-striped">
+                <caption>This data stored in <code>Analyzer.configs</code></caption>
+                <thead>
+                <tr>
+                    <th scope="col">Config Term</th>
+                    <th scope="col">Value</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for key, value in props.items() %}
+                <tr>
+                    <td>{{key}}</td>
+                    <td>{{value | cut_if_too_long(50) }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Absolute and Excess Return Image -->
+            <h2 id="performance">PnL Curve & Performance Metrics</h2>
+
+            <img src="pnl_img.png" class="img-fluid" alt="Responsive Image">
+            <p>This data is stored in <code>Analyzer.df_returns</code></p>
+
+            <h3 id="pmetric"> Strategy Performance Metrics </h3>
+            <p>These are calculated using ACTIVE return of your portfolio. When calculating sharpe ratio, risk-free rate is assumed to be 0.</p>
+
+            <table class="table table-striped">
+                <caption>This data is stored in <code>Analyzer.performance_metrics</code></caption>
+                <thead>
+                <tr>
+                    <th scope="col">Term</th>
+                    <th scope="col">Value</th>
+                </tr>
+                </thead>
+                {% for key, value in performance_metrics_report %}
+                <tr>
+                    <td>{{key}}</td>
+                    <td align="right">{{value | round_if_float(1) }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            <h3 id="rmetric"> Strategy Risk Metrics </h3>
+            <table class="table table-striped">
+                <caption>This data is stored in <code>Analyzer.risk_metrics</code></caption>
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col">Term</th>
+                    <th scope="col">Value</th>
+                </tr>
+                </thead>
+                {% for key, value in risk_metrics_report %}
+                <tr>
+                    <td>{{key}}</td>
+                    <td align="right">{{value | round_if_float(3) }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            <h3 id="dpnlmetric"> Daily PnL Metrics </h3>
+            <table class="table table-striped">
+                <caption>This data is stored in <code>Analyzer.dailypnl_metrics</code></caption>
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col">Term</th>
+                    <th scope="col">Value</th>
+                </tr>
+                </thead>
+                {% for key, value in dailypnl_metrics_report %}
+                <tr>
+                    <td>{{key}}</td>
+                    <td align="right">{{value | round_if_float(3) }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            <h3>Tail 5 Daily PnL</h3>
+            <table class="table table-striped">
+                <caption>This data is stored in <code>Analyzer.dailypnl_tail5_metrics</code></caption>
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col">Term</th>
+                    <th scope="col">Value</th>
+                </tr>
+                </thead>
+                {% for key, value in dailypnl_tail5_metrics_report %}
+                <tr>
+                    <td>{{key}}</td>
+                    <td align="right">{{value | round_if_float(3) }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            <h3>Top 5 Daily PnL</h3>
+            <table class="table table-striped">
+                <caption>This data is stored in <code>Analyzer.dailypnl_top5_metrics</code></caption>
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col">Term</th>
+                    <th scope="col">Value</th>
+                </tr>
+                </thead>
+                {% for key, value in dailypnl_top5_metrics_report %}
+                <tr>
+                    <td>{{key}}</td>
+                    <td align="right">{{value | round_if_float(3) }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            {% if alpha_decomposition is not none%}
+              <h2 id="alpha_decomposition">Alpha Decomposition</h2>
+                <div class="card card-body">
+                    {{ alpha_decomposition.to_html(classes="table table-striped", border=0) }}
+                </div>
+            {% endif %}
+
+            {% if industry_agg is not none%}
+              <h2 id="industry_agg">Industry Total Alpha and Overweight</h2>
+                <div class="card card-body">
+                    {{ industry_agg.to_html(classes="table table-striped", border=0) }}
+                </div>
+            {% endif %}
+
+            <!-- Trading & Holding PnL -->
+            <h2 id="trading_holding">Daily Trading & Holding PnL</h2>
+            <p>
+                Trading PnL = (close price - fill price) * position change
+                <br>
+                Holding PnL = (close price - pre-close price) * initial position
+            </p>
+
+            <img src="pnl_img_trading_holding.png" class="img-fluid" alt="Responsive Image">
+            <p>This data is stored in <code>Analyzer.df_pnl</code></p>
+
+            {% if df_brinson is defined %}
+            <h2 id="brinson">Brinson Attribution</h2>
+
+            <img src="brinson_attribution.png" class="img-fluid" alt="Responsive Image">
+            <p>This data is stored in <code>Analyzer.df_brinson</code></p>
+
+            {% endif %}
+
+            <!-- Selected Assets Investigation -->
+            {% if selected_securities|length > 0 %}
+            <h2 id="symbol_pnl_img">Visualization for Selected Security </h2>
+                {% for symbol in selected_securities %}
+                <img src="{{symbol}}.png" class="img-fluid" alt="Responsive Image">
+                {% endfor %}
+
+            <h2 id="symbol_pnl_table">Daily PnL for Selected Security</h2>
+                {% for symbol in selected_securities %}
+
+                <span> {{ symbol }} </span>
+                <br>
+                {{ df_daily[symbol].to_html(classes="table table-striped", border=0) }}
+                <br>
+
+                {% endfor %}
+
+            {% endif %}
+
+            <!-- Position on Re-balance Days -->
+            {% if rebalance_positions is not none %}
+            <h2 id="rebalance_positions">Table of Position on Re-balance Days </h2>
+                {% for date, df in rebalance_positions.items() %}
+                    <p>
+                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapsePos{{date}}" aria-expanded="false" aria-controls="collapsePos{{date}}">
+                            Position at {{ date }}
+                        </button>
+                    </p>
+                    <div class="collapse" id="collapsePos{{date}}">
+                        <div class="card card-body">
+                            {{ df.to_html(classes="table table-striped", border=0) }}
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <p>This data is stored in <code>Analyzer.rebalance_positions</code></p>
+            {% endif %}
+
+            {% if alpah_weight_contribution %}
+              <h2 id="alpha_weight_contribution">Alpha Weight Contribution</h2>
+              <p>Table of Alpha contribution on top 40% weight. Total {{ alpha_weight_traded_stocks }} stocks were bought. </p>
+                <div class="card card-body">
+                  {{ alpha_weight_contribution.to_html(classes="table table-striped", border=0) }}
+                </div>
+            {% endif %}
+
+            <!-- Trading & Holding PnL -->
+            {% if alpha_decay_image  %}
+              <h2 id="alpha_decay">Alpha Decay</h2>
+              <p>
+                Sort the stock by average weight from top to bottom, then aggregate the alpha contribution by every 5 stocks.
+              </p>
+
+              <img src="{{alpha_decay_image}}" class="img-fluid" alt="Responsive Image">
+            {% endif %}
+
+            {% if alpha_decay_weight_image  %}
+              <h2 id="alpha_decay_weight">Alpha Decay Scaled by Weight</h2>
+              <p>
+                In each group, scale the alpha contribution by aggregate weight
+              </p>
+
+              <img src="{{alpha_decay_weight_image}}" class="img-fluid" alt="Responsive Image">
+            {% endif %}
+
+            {% if cum_alpha_weight_image  %}
+              <h2 id="cum_alpha_weight">Cumulative Alpha and Weight</h2>
+              <p>
+                Calculate cumulative weight and alpha contribution after sort the stock by average weight from top to bottom.
+              </p>
+
+              <img src="{{cum_alpha_weight_image}}" class="img-fluid" alt="Responsive Image">
+            {% endif %}
+
+            {% if industry_overweight_images %}
+              <h2 id="industry_overweight">Industry Overwight</h2>
+                {% for image in industry_overweight_images %}
+                  <img src="{{image}}" class="img-fluid" alt="Responsive Image">
+                {% endfor %}
+            {% endif %}
+
+            {% if alpha_decomposition_images %}
+              <h2 id="alpha_decomposition_images">Total Alpha Decomposition by Month</h2>
+              <img src="{{alpha_decomposition_images}}" class="img-fluid" alt="Responsive Image">
+            {% endif %}
+
+            {% if alpha_decomposition_industry_images %}
+              <h2 id="alpha_decomposition_industry_images">Industry alpha Decomposition by Month</h2>
+              <img src="{{alpha_decomposition_industry_images}}" class="img-fluid" alt="Responsive Image">
+            {% endif %}
+
+            {% if sold_alpha_decay_image  %}
+              <h2 id="sold_alpha_decay">Sold Alpha Decay</h2>
+
+              <img src="{{sold_alpha_decay_image}}" class="img-fluid" alt="Responsive Image">
+            {% endif %}
+
+
+            <!--{% if average_industry_overweight is not none%}-->
+              <!--<h2 id="average_industry_overweight">Average Industry Overwwight</h2>-->
+                <!--<div class="card card-body">-->
+                    <!--{{ average_industry_overweight.to_html(classes="table table-striped", border=0) }}-->
+                <!--</div>-->
+            <!--{% endif %}-->
+
+            <!-- Daily Position -->
+            {% if daily_position is not none %}
+            <h2 id="daily_position"> Table of Daily Position </h2>
+            {{ daily_position.to_html(classes="table table-striped", border=0) }}
+
+            <p>This data is stored in <code>Analyzer.daily_position</code></p>
+            {% endif %}
+
+            <!-- Position Changes -->
+            {% if position_change is not none %}
+            <h2 id="position_change">Table of Records of Position Changes</h2>
+                {% for date, df in position_change.items() %}
+
+                <span>{{ date }}</span>
+                <br>
+                market value = {{ account[date]['market_value'] / 1000.0 | round(0) }}k,
+                cash = {{ account[date]['cash'] / 1000.0 | round(0) }}k,
+                <br>
+                {{ df.to_html(classes="table table-striped", border=0) }}
+
+                {% endfor %}
+
+            <p>This data is stored in <code>Analyzer.position_change</code></p>
+            {% endif %}
+
+
+        </div>
+        <!-- Right page: table of contents -->
+        <div class="col-md-3" role="complementary" style="margin: 3em 0 0 0">
+            <nav id="toc" data-spy="affix" data-toggle="toc" class="affix">
+                <p>Table of Contents</p>
+            </nav>
+            <div class="right-bottom">
+                <a class="btn btn-default btn-sm" href="#top" role="button">back to Top</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Placed at the end of the document so the pages load faster -->
+
+    <!-- Bootstrap JS -->
+    <!-- <script src="bootstrap/js/jquery.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
+    <!-- <script src="bootstrap/js/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script> -->
+    <!-- <script src="bootstrap/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script> -->
+    <script>
+            {% include 'bootstrap/js/jquery.slim.min.js' %}
+            {% include 'bootstrap/js/popper.min.js' %}
+            {% include 'bootstrap/js/bootstrap.min.js' %}
+            {% include 'bootstrap-toc/bootstrap-toc.min.js' %}
+        </script>
+
+    <!-- add after bootstrap.min.js: bootstrap-toc -->
+    <!-- <script src="bootstrap-toc/bootstrap-toc.min.js"></script> -->
+</body>
+</html>
